@@ -1,0 +1,91 @@
+﻿@using Gurukul.Web.Infrastructure
+@model Gurukul.Web.ViewModels.Student.StudentViewModel
+
+@{
+    var formTitle = Model.Id > 0 ? "Edit Student" : "Create Student";
+}
+@section customcss
+{
+    @Styles.Render("~/bundles/datepickercss");
+}
+
+
+
+<div class="col-sm-12">
+    <div class="box box-info box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">@formTitle</h3>
+        </div><!-- /.box-header -->
+        <div class="box-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Id)
+
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.FormTextBoxFor(x=>x.FirstName,placeHolder: "First name is required")
+                                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.FormTextBoxFor(x=>x.LastName,placeHolder:"Last name is required")
+                                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.EnrolledDate, new { @class = "control-label col-md-2" })
+                            <div class="col-md-3">
+                                @Html.DateControl(x=>x.EnrolledDate)
+                                @Html.ValidationMessageFor(model => model.EnrolledDate, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                @Html.SubmitButton("","Save","btn-warning", "fa-save")
+                                @Html.LinkButton(Url.Action("Index"),"Cancel", "btn-default", "fa-arrow-left")
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/datepickerjs")
+
+
+    <script type="text/javascript">
+        $(function () {
+            $('#EnrolledDateDiv').datepicker({
+                format: 'yyyy/mm/dd',
+                autoclose: true,
+                todayHighlight: true,
+                showOnFocus: false,
+                clearBtn:true
+            });
+
+            var enrolledDate = @Model.EnrolledDateForScript;
+            var datePicker = $('#EnrolledDateDiv').data('datepicker');
+            datePicker.setDate(new Date(enrolledDate));
+            datePicker.update();
+        });
+    </script>
+}

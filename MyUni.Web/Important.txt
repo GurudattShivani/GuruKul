@@ -1,0 +1,138 @@
+﻿When scaffolding with a dbcontext and when entity type configurations are defined (classes which derives EntityTypeConfiguration<T>), VS will throw an error
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+http://stackoverflow.com/questions/24974218/scaffolding-controller-doesnt-work-with-visual-studio-2013-update-3-and-4
+-	Change the DbSet<T> to IDbSet<T>
+
+
+
+
+Adding a solution to GIT HUB
+----------------------------
+http://stackoverflow.com/questions/19982053/how-do-i-add-an-existing-solution-to-github-from-visual-studio-2013
+
+
+1.	Open the solution in Visual Studio 2013
+2.	Select File | Add to Source Control
+3.	Select the Microsoft Git Provider
+4.	That creates a local GIT repository
+
+5.	Surf to GitHub
+	5.1	Create a new repository DO NOT SELECT Initialize this repository with a README
+	5.2	That creates an empty repository with no Master branch
+	5.3	Once created open the repository and copy the URL (it's on the right of the screen in the current version)
+
+6. Go back to Visual Studio
+	6.1	Make sure you have the Microsoft Git Provider selected under Tools/Options/Source Control/Plug-in Selection
+	6.2	Open Team Explorer
+	6.3	Select Home | Unsynced Commits
+	6.4	Enter the GitHub URL into the yellow box
+	6.5	Click Publish
+	6.6	Select Home | Changes
+	6.7	Add a Commit comment
+	6.8	Select Commit and Push from the drop down
+
+
+Cannot attach the file *.mdf as database error
+----------------------------------------------
+http://stackoverflow.com/questions/17012839/cannot-attach-the-file-mdf-as-database
+
+Solution 1
+-	Remove the "initial catalog" from the connection string.
+
+Solution 2
+-	Change the database name
+
+
+
+
+Entity States and the Attach and SaveChanges Methods
+----------------------------------------------------
+
+https://msdn.microsoft.com/en-us/data/jj592676
+https://msdn.microsoft.com/en-us/data/jj592872
+
+The database context keeps track of whether entities in memory are in sync with their corresponding rows in the database, and this information determines what happens when you call the SaveChanges method. 
+For example, when you pass a new entity to the Add method, that entity's state is set to Added. Then when you call the SaveChanges method, the database context issues a SQL INSERT command.
+
+An entity may be in one of the following states:
+
+1.	Added. The entity does not yet exist in the database. The SaveChanges method must issue an INSERT statement.
+2.	Unchanged. Nothing needs to be done with this entity by the SaveChanges method. When you read an entity from the database, the entity starts out with this status.
+3.	Modified. Some or all of the entity's property values have been modified. The SaveChanges method must issue an UPDATE statement.
+4.	Deleted. The entity has been marked for deletion. The SaveChanges method must issue a DELETE statement.
+5.	Detached. The entity isn't being tracked by the database context.
+	In a desktop application, state changes are typically set automatically. In a desktop type of application, you read an entity and make changes to some of its property values. 
+	This causes its entity state to automatically be changed to Modified. Then when you call SaveChanges, the Entity Framework generates a SQL UPDATE statement that updates only the actual properties that you changed.
+
+The disconnected nature of web apps doesn't allow for this continuous sequence. 
+The DbContext that reads an entity is disposed after a page is rendered. 
+When the HttpPost Edit action method is called,  a new request is made and you have a new instance of the DbContext, so you have to manually set the entity state to Modified. 
+Then when you call SaveChanges, the Entity Framework updates all columns of the database row, because the context has no way to know which properties you changed.
+
+If you want the SQL Update statement to update only the fields that the user actually changed, you can save the original values in some way (such as hidden fields) so that they are available when the HttpPost Edit method is called. 
+Then you can create a Student entity using the original values, call the Attach method with that original version of the entity, update the entity's values to the new values, and then call SaveChanges.
+For more information, see Entity states and SaveChanges and Local Data in the MSDN Data Developer Center.
+
+
+DI with Ninject
+---------------
+1.	Use Nuget, and install
+	1.1	Ninject MVC 5
+	1.2	Ninject integration for web api2
+
+2.	Create a custom dependency resolver class inheriting from "NijectScope" and which implements both IDependencyResolver interface (System.Web.Mvc and System.Web.Http).
+	The reason to implement both interfaces are to use this dependency resolver in both MVC and in Web Api.
+
+3.	In "NinjectWebCommon.cs" modify the "RegisterServices" as shown below.
+
+	 private static void RegisterServices(IKernel kernel)
+        {
+            var appDependencyResolver = new GurukulDependencyResolver(kernel);
+            GlobalConfiguration.Configuration.DependencyResolver = appDependencyResolver;
+        }  
+
+	The above code will register the created custom dependency resolver as the application's dependency resolver.
+
+
+Cannot open database "DSWorkflow" requested by the login. The login failed. Login failed for user 'IIS APPPOOL\DefaultAppPool'.
+-------------------------------------------------------------------------------------------------------------------------------
+
+http://stackoverflow.com/questions/7698286/login-failed-for-user-iis-apppool-asp-net-v4-0
+
+The reason for this is the user which the app pool have been defined doesn't have access to the database. To fix this,
+
+1. In SSMS, under the server, expand Security, and create a user by the name "IIS APPPOOL\DefaultAppPool".
+2. Then grant him the required access rights to the database.
+
+
+Login failed for user 'IIS APPPOOL\ASP.NET v4.0'
+-----------------------------------------------
+
+This happens when the app pool user does not have access rights to the database which we're operating on.
+The solution is to create this user (if it's not there), and give him the probable access rights to the database
+
+http://stackoverflow.com/questions/7698286/login-failed-for-user-iis-apppool-asp-net-v4-0
+
+
+
+Failed to load resource (font awesome web font)
+-----------------------------------------------
+https://github.com/FortAwesome/Font-Awesome/issues/5559
+
+Add the following to your web.config file as a child node inside "system.webServer"
+
+<staticContent>
+      <remove fileExtension=".woff"/>
+      <remove fileExtension=".woff2"/>
+      <mimeMap fileExtension=".woff" mimeType="application/font-woff"/>
+      <mimeMap fileExtension=".woff2" mimeType="application/font-woff2"/>
+</staticContent>
+
+How to convert a C# date time object to a Java Script date object
+-----------------------------------------------------------------
+Sometimes, we need just to confirm the C# date object to the script, without specifying constructor parameters (year, month, date) of the java script date
+http://stackoverflow.com/questions/2404247/datetime-to-javascript-date
+
+Adding a "favicon" to the application
+-------------------------------------
+http://stackoverflow.com/questions/487230/serving-favicon-ico-in-asp-net-mvc

@@ -1,0 +1,116 @@
+﻿@using System.Web.Mvc.Html
+@using Gurukul.Business
+
+@model IEnumerable<Student>
+
+@{
+    ViewBag.Title = "Students";
+}
+
+
+
+
+<div class="col-sm-12">
+    <div class="box box-info box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Students</h3>
+        </div><!-- /.box-header -->
+        <div class="box-body">
+            <div class="col-sm-3 no-left-padding">
+                <div class="input-group input-group-sm">
+                    <input type="text" id="search" name="search" class="form-control" placeholder="Search&hellip;">
+                    <span class="input-group-btn">
+                        <button id="btnSearch" name="btnSearch" type="button" class="btn btn-info btn-flat">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            @*<div class="col-sm-9"></div>*@
+            <div class="clearfix visible-sm-block"></div>
+            <hr />
+            <p>
+                <a href="@Url.Action("Create")" class="btn btn-warning">
+                    <i class="fa fa-plus"></i>
+                    &nbsp;Add New Student
+                </a>
+            </p>
+            <div>
+                @{ Html.RenderPartial("_studentsView", Model); }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div id="confirmDelete" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light-blue-gradient">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Confirm</h4>
+            </div>
+
+            <div class="modal-body">
+                @Html.Hidden("deleteUrl")
+                <p>Are you sure you want to delete?</p>
+
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right">
+                    <button id="btnYes" name="btnYes" type="submit" class="btn btn-warning">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval");
+
+    <script src="~/Scripts/App/Students/index.js"></script>
+
+    <script id="tmpActions" type="text/template">
+        <div class="btn-group" role="group">
+            <button type="button" class="editBtn btn btn-sm btn-primary btn-right-margin">
+                <i class="fa fa-edit"></i>
+                &nbsp;Edit
+            </button>
+            <button type="button" class="detailsBtn btn btn-sm btn-info btn-right-margin">
+                <i class="fa fa-info"></i>
+                &nbsp;Details
+            </button>
+            <button type="button" class="deleteBtn btn btn-sm bg-red-gradient ">
+                <i class="fa fa-close"></i>
+                &nbsp;Delete
+            </button>
+        </div>
+    </script>
+    
+    <script id="tmpDetails" type="text/template">
+        <a href="#" class="btn btn-sm btn-info">
+            <i class="fa fa-details"></i>
+        </a>
+    </script>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            var options = {
+                searchUrl: '@Url.Action("GetStudents")',
+                editUrl: '@Url.Action("Edit")',
+                detailsUrl: '@Url.Action("Details")',
+                deleteUrl: '@Url.Action("Delete")'
+            };
+
+            var viewModel = new app.StudentsViewModel(options);
+            viewModel.init();
+
+        });
+
+    </script>
+}
